@@ -4,7 +4,7 @@
 
 <div width="100%">
 <img align="left" alt="GUI截图" src="assets/gui.png" width="54%"/>
-<img align="right" alt="GUI截图" src="assets/data_content.png" width="42%"/>
+<img align="right" alt="GUI截图" src="assets/data_content.png" width="40%"/>
 </div>
 
 ![](assets/console.png)
