@@ -9,6 +9,8 @@
 <img align="right" alt="GUI截图" src="assets/console.png" width="64%"/>
 
 
+![Alt](https://repobeats.axiom.co/api/embed/baa77ed8c25f6b74eb916beb0437548afd8ab10d.svg "Repobeats analytics image")
+
 ## 开发计划:
 * 把filter参数的传递从命令行参数改成GUI控件来输入.
 * 利用 [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) 优化其GUI.
