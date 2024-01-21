@@ -9,7 +9,7 @@
 import sys
 import threading
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, scrolledtext
 
 from core import _columns, _data, NetSniffer
 
@@ -29,6 +29,9 @@ class DataTable(tk.Frame):
 
         # 初始数据
         self.update_data()
+
+        # 绑定单击事件
+        self.tree.bind("<ButtonRelease-1>", self.on_tree_click)
 
         self.tree.pack(expand=True, fill="both")
 
@@ -56,6 +59,22 @@ class DataTable(tk.Frame):
         # 每分钟调用一次更新数据函数
         self.after(100, self.update_data)
 
+    def on_tree_click(self, event):
+        item_id = self.tree.identify_row(event.y)
+        if item_id:
+            # 获取点击的行的数据
+            values = self.tree.item(item_id, "values")
+            print("values:", values)
+            ack = values[0]
+            seq = values[1]
+            curr_data = _data[int(ack)]
+            paket_infos = curr_data["PKTs"]
+            # 调用回调函数显示详情信息
+            for pkt_info in paket_infos:
+                if pkt_info["tcp_seq"] == int(seq):
+                    app.show_detail_window(pkt_info)
+                    break
+
 
 class App:
     def __init__(self, root):
@@ -74,6 +93,7 @@ class App:
         # 创建输入框
         self.input_entry = tk.Entry(self.toolbar)
         self.input_entry.pack(side=tk.LEFT)
+        self.input_entry.insert(tk.END, "tcp and ip src 192.168.1.57")
 
         # 创建 DataTable 实例，并传递工具栏
         self.data_table = DataTable(root)
@@ -98,16 +118,41 @@ class App:
             self.data_table.update_data()
             # 执行 开始
             filter_value = self.input_entry.get()
-            messagebox.showinfo("SuperSniffer", f"filter: {filter_value}")
+            # messagebox.showinfo("SuperSniffer", f"filter: {filter_value}")
             self.sniffer = NetSniffer(filter_value)
             self.sniffer.start()
             self.input_entry.config(state=tk.DISABLED)
+
+    def show_detail_window(self, values: dict):
+        # 创建新窗口显示详细信息
+        detail_window = tk.Toplevel(self.root)
+        detail_window.title("Detail Window")
+        detail_window.geometry("800x600")
+        # 创建标签显示详细信息
+        # for i, label_text in enumerate(
+        #         ["TCP Ack", "TCP Seq", "IP src", "TCP sport", "IP dst", "TCP dport", "IP ttl", "Accept-Ranges", "Content-Type", "Content-Length", "Sever",
+        #          "Content"]):
+        #     tk.Label(detail_window, text=f"{label_text}:").grid(row=i, column=0, sticky=tk.E)
+        #     tk.Label(detail_window, text=values[i]).grid(row=i, column=1, sticky=tk.W)
+        for i, key in enumerate(values.keys()):
+            if key == "load":
+                pass
+            else:
+                tk.Label(detail_window, text=f"{key}:").grid(row=i, column=0, sticky=tk.E)
+                tk.Label(detail_window, text=values[key]).grid(row=i, column=1, sticky=tk.W)
+        # 创建滚动文本框
+        load_row_index = len(values.keys()) + 1
+        tk.Label(detail_window, text=f"Load:").grid(row=load_row_index, column=0, sticky=tk.E)
+        textel = tk.scrolledtext.ScrolledText(detail_window, wrap=tk.WORD, width=40, height=10)
+        textel.grid(row=load_row_index, column=1, sticky=tk.W)
+        textel.insert(tk.END, values["load"])
 
 
 if __name__ == "__main__":
     print(sys.argv)
     # 创建主窗口
     root = tk.Tk()
+    root.geometry("1400x1400")
     app = App(root)
 
     # 运行主循环

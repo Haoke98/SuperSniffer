@@ -6,8 +6,12 @@
 @Software: PyCharm
 @disc:
 ======================================="""
+import binascii
+import gzip
 import mimetypes
 import os
+import zlib
+from io import BytesIO
 
 from scapy.all import sniff
 from scapy.layers.inet import TCP, IP
@@ -16,9 +20,7 @@ from scapy.packet import Raw, ls
 import threading
 
 _columns = {
-    "ack": {
-        "width": 60
-    },
+    "tcp_ack": {"width": 80},
     "tcp_seq": {"width": 80},
     "ip_src": {"width": 100},
     "tcp_sport": {"width": 50},
@@ -28,6 +30,7 @@ _columns = {
     "Accept-Ranges": {"width": 80},
     "Content-Type": {"width": 80},
     "Content-Length": {"width": 40},
+    "Content-Encoding": {"width": 40},
     "Server": {"width": 80},
     "PKT Count": {"width": 30},
     "Teacher": {"width": 100}
@@ -80,13 +83,15 @@ def packet_callback(pkt: Ether):
         print("Raw layer:", raw_layer)
         raw_data = raw_layer.load
         print(" " * 10, "Raw packet", raw_data)
+        info["load"] = raw_data
         blocks = raw_data.split(b'\r\n')
         for block in blocks:
             print(block)
             try:
                 block_str = block.decode("utf-8")
                 for k in ["Content-Type", "Content-Length", "Accept-Encoding", "Accept-Language", "Connection",
-                          "Upgrade-Insecure-Requests", "Server-Side-Effects", "Server", "Accept-Ranges", "Content"]:
+                          "Upgrade-Insecure-Requests", "Server-Side-Effects", "Server", "Accept-Ranges", "Content",
+                          "Content-Encoding"]:
                     target = f"{k}: "
                     if target in block_str:
                         # 特殊情况特殊处理
@@ -149,16 +154,30 @@ def save_data_content():
                     ext = ".js"
             fp = os.path.join(data_content_dir, str(ack) + ext)
             with open(fp, "wb") as f:
+                byte_stream = b''
                 for i, pkt in enumerate(pkts):
                     PKT = pkt["pkt"]
                     raw_layer = PKT[Raw]
-                    raw_data = raw_layer.load
-                    if i == 0:
-                        blocks = raw_data.split(b'\r\n\r\n')
-                        image_data = blocks[1]
-                        f.write(image_data)
-                    else:
-                        f.write(raw_data)
+                    byte_stream += raw_layer.load
+                start = byte_stream.find(b'\r\n\r\n') + 4
+                byte_stream_content = byte_stream[start:]
+                final_binary_content = byte_stream_content
+                if pkts[0].__contains__("Content-Encoding"):
+                    if pkts[0]["Content-Encoding"] == "gzip":
+                        gzip_start = byte_stream.find(b"\x1f\x8b\x08")
+                        byte_stream_content = byte_stream[gzip_start:]
+                        try:
+                            #     final_binary_content = gzip.decompress(byte_stream_content)
+                            # gzip_data = binascii.a2b_base64(byte_stream_content)
+                            gzip_data = byte_stream_content
+                            # 解压gzip数据
+                            with gzip.GzipFile(fileobj=BytesIO(gzip_data), mode='rb') as gzip_f:
+                                png_data = gzip_f.read()
+                                f.write(png_data)
+                        except EOFError:
+                            pass
+                else:
+                    f.write(final_binary_content)
 
 
 class NetSniffer(threading.Thread):
