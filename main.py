@@ -45,7 +45,14 @@ if not os.path.exists(data_content_dir):
 
 def save_data_content():
     for ack in _data.keys():
-        pkts = _data[ack]["PKTs"]
+        pkts: list = _data[ack]["PKTs"]
+        pkts = sorted(pkts, key=lambda item: item["tcp_seq"])
+        seqs = []
+        for pkt in pkts:
+            if pkt["tcp_seq"] in seqs:
+                print("Dropping...")
+                pkts.remove(pkt)
+
         # Save the data content to a file
         if pkts[0].__contains__("Content-Type"):
             ext = mimetypes.guess_extension(pkts[0]["Content-Type"])
@@ -193,7 +200,7 @@ class DataTable(tk.Frame):
                 self.tree.insert(class_node, "end", values=_values)
 
         # 每分钟调用一次更新数据函数
-        self.after(1000, self.update_data)
+        self.after(100, self.update_data)
 
 
 def my_sniff(filter: str):
