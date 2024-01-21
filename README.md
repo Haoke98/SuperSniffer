@@ -10,10 +10,11 @@
  
 
 ## 开发计划:
-* 把filter参数的传递从命令行参数改成GUI控件来输入.
-* 利用 [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) 优化其GUI.
-* 利用 [TkinterDesigner](https://github.com/ParthJadhav/Tkinter-Designer) 提高GUI开发效率.
-* 利用 [Sun-Valley-ttk-theme](https://github.com/rdbende/Sun-Valley-ttk-theme) 优化其GUI.
+* [x] 把filter参数的传递从命令行参数改成GUI控件来输入.
+* [ ] 修复PNG图片的TCP包抓取以后出现拼接出来的图片无法预览文件损坏问题.
+* [ ] 利用 [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) 优化其GUI.
+* [ ] 利用 [TkinterDesigner](https://github.com/ParthJadhav/Tkinter-Designer) 提高GUI开发效率.
+* [ ] 利用 [Sun-Valley-ttk-theme](https://github.com/rdbende/Sun-Valley-ttk-theme) 优化其GUI.
 
 
 
