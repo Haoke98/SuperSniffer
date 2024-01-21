@@ -3,8 +3,8 @@
 基于Scapy进行嗅探并自动提取资源. 中间人攻击中很有用.
 
 <div width="100%">
-<img align="left" alt="GUI截图" src="assets/gui.png" width="54%"/>
-<img align="right" alt="GUI截图" src="assets/data_content.png" width="40%"/>
+<img align="left" alt="GUI截图" src="assets/guiv1.png" width="60%"/>
+<img align="right" alt="GUI截图" src="assets/data_content.png" width="32%"/>
 </div>
 
 ![](assets/console.png)
