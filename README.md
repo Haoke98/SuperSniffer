@@ -6,7 +6,7 @@
 <img align="left" alt="GUI截图" src="assets/guiv1.png" width="100%"/>
 </div>
 <img align="left" alt="GUI截图" src="assets/data_content.png" width="28%"/>
-<img align="right" alt="GUI截图" src="assets/console.png" width="64%"/>
+<img align="right" alt="GUI截图" src="assets/console.png" width="68%"/>
 
 
 ![Alt](https://repobeats.axiom.co/api/embed/baa77ed8c25f6b74eb916beb0437548afd8ab10d.svg "Repobeats analytics image")
