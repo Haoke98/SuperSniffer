@@ -4,14 +4,18 @@
 
 <div width="100%">
 <img align="left" alt="GUI截图" src="assets/guiv1.png" width="100%"/>
-</div>
-<img align="right" alt="GUI截图" src="assets/console.png" width="100%"/>
+<img align="right" alt="GUI截图" src="assets/detail.png" width="100%"/>
+<img align="left" alt="GUI截图" src="assets/console.png" width="100%"/>
 <img align="right" alt="GUI截图" src="assets/data_content.png" width="28%"/>
+</div>
+
  
 
 ## 开发计划:
 * [x] 把filter参数的传递从命令行参数改成GUI控件来输入.
 * [ ] 修复PNG图片的TCP包抓取以后出现拼接出来的图片无法预览文件损坏问题.
+* [ ] 解决GZIP压缩文件的解压还原问题.
+* [ ] 优化详情页面的GUI.
 * [ ] 利用 [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) 优化其GUI.
 * [ ] 利用 [TkinterDesigner](https://github.com/ParthJadhav/Tkinter-Designer) 提高GUI开发效率.
 * [ ] 利用 [Sun-Valley-ttk-theme](https://github.com/rdbende/Sun-Valley-ttk-theme) 优化其GUI.
