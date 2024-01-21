@@ -88,20 +88,21 @@ def packet_callback(pkt: Ether):
     #             with open('image.jpg', 'wb') as f:
     #                 f.write(raw_layer.load)
 
+    info = {"pkt": pkt}
     if pkt.haslayer(TCP) and pkt.haslayer(Raw):
         ip_layer = pkt.getlayer(IP)
         print("IP layer", ip_layer)
+        if ip_layer:
+            info["ip_src"] = ip_layer.src
+            info["ip_dst"] = ip_layer.dst
+            info["ip_ttl"] = ip_layer.ttl
         tcp_layer = pkt[TCP]
         print("TCP layer:", tcp_layer)
-        info = {
-            "tcp_seq": tcp_layer.seq,
-            "ip_src": ip_layer.src,
-            "ip_dst": ip_layer.dst,
-            "ip_ttl": ip_layer.ttl,
-            "tcp_sport": tcp_layer.sport,
-            "tcp_dport": tcp_layer.dport,
-            "pkt": pkt
-        }
+        if tcp_layer:
+            info["tcp_seq"] = tcp_layer.seq
+            info["tcp_ack"] = tcp_layer.ack
+            info["tcp_sport"] = tcp_layer.sport
+            info["tcp_dport"] = tcp_layer.dport
         raw_layer = pkt[Raw]
         print("Raw layer:", raw_layer)
         raw_data = raw_layer.load
@@ -115,7 +116,12 @@ def packet_callback(pkt: Ether):
                           "Upgrade-Insecure-Requests", "Server-Side-Effects", "Server", "Accept-Ranges", "Content"]:
                     target = f"{k}: "
                     if target in block_str:
-                        info[k] = block_str.replace(target, "")
+                        # 特殊情况特殊处理
+                        if k == "Content-Type" and "text/plain" in block_str:
+                            info["Content-Type"] = "text/plain"
+                        else:
+                            info[k] = block_str.replace(target, "")
+
             except UnicodeDecodeError:
                 pass
 
@@ -191,12 +197,18 @@ class DataTable(tk.Frame):
 
 
 def my_sniff(filter: str):
-    sniff(prn=packet_callback, store=0, filter=filter)
+    if filter:
+        sniff(prn=packet_callback, store=0, filter=filter)
+    else:
+        sniff(prn=packet_callback, store=0)
 
 
 if __name__ == "__main__":
     print(sys.argv)
-    th = threading.Thread(target=my_sniff, args=(sys.argv[1],))
+    if sys.argv.__len__() > 1:
+        th = threading.Thread(target=my_sniff, args=(sys.argv[1],))
+    else:
+        th = threading.Thread(target=my_sniff, args=(None,))
     th.start()
     # 创建主窗口
     root = tk.Tk()
