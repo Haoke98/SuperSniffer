@@ -4,12 +4,11 @@
 
 <div width="100%">
 <img align="left" alt="GUI截图" src="assets/guiv1.png" width="100%"/>
-<img align="right" alt="GUI截图" src="assets/detail.png" width="100%"/>
-<img align="left" alt="GUI截图" src="assets/console.png" width="100%"/>
-<img align="right" alt="GUI截图" src="assets/data_content.png" width="28%"/>
+<img align="left" alt="GUI截图" src="assets/detail.png" width="60%"/>
+<img align="right" alt="GUI截图" src="assets/data_content.png" width="30%"/>
 </div>
 
- 
+![](assets/console.png)
 
 ## 开发计划:
 * [x] 把filter参数的传递从命令行参数改成GUI控件来输入.
