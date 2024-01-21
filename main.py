@@ -56,6 +56,9 @@ def save_data_content():
         # Save the data content to a file
         if pkts[0].__contains__("Content-Type"):
             ext = mimetypes.guess_extension(pkts[0]["Content-Type"])
+            if ext is None:
+                if pkts[0]["Content-Type"] == "text/javascript":
+                    ext = ".js"
             fp = os.path.join(data_content_dir, str(ack) + ext)
             with open(fp, "wb") as f:
                 for i, pkt in enumerate(pkts):
