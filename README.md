@@ -3,11 +3,11 @@
 基于Scapy进行嗅探并自动提取资源. 中间人攻击中很有用.
 
 <div width="100%">
-<img align="left" alt="GUI截图" src="assets/guiv1.png" width="60%"/>
-<img align="right" alt="GUI截图" src="assets/data_content.png" width="32%"/>
+<img align="left" alt="GUI截图" src="assets/guiv1.png" width="100%"/>
 </div>
+<img align="left" alt="GUI截图" src="assets/data_content.png" width="28%"/>
+<img align="right" alt="GUI截图" src="assets/console.png" width="64%"/>
 
-![](assets/console.png)
 
 ## 开发计划:
 * 把filter参数的传递从命令行参数改成GUI控件来输入.
