@@ -6,6 +6,7 @@
 @Software: PyCharm
 @disc:
 ======================================="""
+import mimetypes
 import os
 import sys
 import threading
@@ -46,22 +47,20 @@ def save_data_content():
     for ack in _data.keys():
         pkts = _data[ack]["PKTs"]
         # Save the data content to a file
-        if pkts[0]["Content-Type"] == "image/jpeg":
-            fp = os.path.join(data_content_dir, str(ack) + ".jpeg")
-        if pkts[0]["Content-Type"] == "application/xml":
-            fp = os.path.join(data_content_dir, str(ack) + ".xml")
-        with open(fp, "wb") as f:
-            for i, pkt in enumerate(pkts):
-                print(pkt)
-                PKT = pkt["pkt"]
-                raw_layer = PKT[Raw]
-                raw_data = raw_layer.load
-                if i == 0:
-                    blocks = raw_data.split(b'\r\n\r\n')
-                    image_data = blocks[1]
-                    f.write(image_data)
-                else:
-                    f.write(raw_data)
+        if pkts[0].__contains__("Content-Type"):
+            ext = mimetypes.guess_extension(pkts[0]["Content-Type"])
+            fp = os.path.join(data_content_dir, str(ack) + ext)
+            with open(fp, "wb") as f:
+                for i, pkt in enumerate(pkts):
+                    PKT = pkt["pkt"]
+                    raw_layer = PKT[Raw]
+                    raw_data = raw_layer.load
+                    if i == 0:
+                        blocks = raw_data.split(b'\r\n\r\n')
+                        image_data = blocks[1]
+                        f.write(image_data)
+                    else:
+                        f.write(raw_data)
 
 
 def packet_callback(pkt: Ether):
